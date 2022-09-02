@@ -23,7 +23,7 @@ contract AgoraNFT is ERC1155, AccessControl {
         supplyLeft[5] = 3000; // Pythagoras
         supplyLeft[6] = 6000; // Epicurus
         supplyLeft[7] = 46667; // Thales
-        supplyLeft[8] = type(uint256).max; // Thales
+        supplyLeft[8] = type(uint256).max; // Citizen
     }
 
     function setURI(string memory newuri) public onlyRole(URI_SETTER_ROLE) {

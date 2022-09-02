@@ -1,0 +1,27 @@
+{
+    "name": "Socrates",
+    "description": "250,000 AGO \n-20% on transaction fees \n 6% Cashback \n7% Referral on INO",
+    "image": "ipfs://QmPa7vXqSuGfWzZiGYSCAmFYNRAYKof9HoieRg5goDcroq/1.png",
+    "attributes": [
+        {
+            "display_type": "boost_percentage",
+            "trait_type": "affiliation lvl 1",
+            "value": 7
+        },
+        {
+            "display_type": "boost_percentage",
+            "trait_type": "affiliation lvl 2",
+            "value": 2
+        },
+        {
+            "display_type": "boost_percentage",
+            "trait_type": "reduction transaction fees",
+            "value": 20
+        },
+        {
+            "display_type": "boost_percentage",
+            "trait_type": "cashback CB",
+            "value": 6
+        }
+    ]
+}
