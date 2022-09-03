@@ -3,29 +3,23 @@ import { NFTs } from "../config";
 import Image from "next/image";
 import { Box, Button, Grid, TextField } from "@mui/material";
 import { ethers } from "ethers";
-import { useEffect, useState } from "react";
+import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
+import { useAddress } from "../hooks/useAddress";
 
 type CoinPayment = "eth" | "usd";
 
 const NFTDisplay = () => {
     const { account, connected } = useEVMContext();
     const contracts = useContractContext();
-    const [address, setAddress] = useState<string | undefined>("");
     const [ETHPrice, setETHPrice] = useState<number>(0);
+    const address = useAddress(account);
 
-    useEffect(() => {
-        (async () => {
-            setAddress(await account?.getAddress());
-        })();
-    }, [account]);
-
-    const handleETHPriceChange = (e) => {
-        setETHPrice(e.target.value);
+    const handleETHPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setETHPrice(Number(e.target.value));
     };
 
     const handleSetETHPRice = async () => {
         try {
-            console.log(ETHPrice)
             await contracts.aggregator?.updateAnswer(
                 ethers.utils.parseUnits(ETHPrice.toString(), 8)
             );
