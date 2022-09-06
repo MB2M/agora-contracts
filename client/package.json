@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@crossmint/client-sdk-react-ui": "^0.1.8-alpha.0",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@mui/material": "^5.10.3",

@@ -11,7 +11,8 @@ const Home: NextPage = () => {
         <div className={styles.container}>
             <ConnectButton></ConnectButton>
             <NFTDisplay></NFTDisplay>
-            <Swapper/>
+            
+            <Swapper />
         </div>
     );
 };

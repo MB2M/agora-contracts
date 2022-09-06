@@ -32,6 +32,12 @@ const config: HardhatUserConfig = {
                 mnemonic: MNEMONIC,
             },
         },
+        rinkeby: {
+            url: process.env.RINKEBY_URL,
+            accounts: {
+                mnemonic: MNEMONIC,
+            },
+        },
     },
     gasReporter: {
         // enabled: process.env.REPORT_GAS !== undefined,

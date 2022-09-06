@@ -9,8 +9,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<any>
 ) {
-    const { from, to, approve } = req.query;
-    const { amount, address, slippage, chainId } = req.body;
+    const { from, to, amount, address, slippage, chainId } = req.query;
 
     if (
         !ethers.utils.isAddress(from as string) ||
@@ -29,9 +28,9 @@ export default async function handler(
     const swapParams = {
         fromTokenAddress: from as string, // 1INCH
         toTokenAddress: to as string, // DAI
-        amount: amount,
-        fromAddress: address,
-        slippage: slippage || swap.defaultSlippage,
+        amount: amount as string,
+        fromAddress: address as string,
+        slippage: (slippage as string) || swap.defaultSlippage.toString(),
         referrerAddress: swap.treasury,
         fee: swap.baseFees.toString(),
         allowPartialFill: "false",
@@ -43,11 +42,15 @@ export default async function handler(
                 swapParams
             ).toString()}`
         );
-        if (response.ok) {
+        // if (response.ok) {
+            // const json = await response.json();
+            // const txData = json.tx;
+            // res.status(200).json(txData);
+        // } else {
             const json = await response.json();
-            const txData = json.tx;
-            res.status(200).json(txData);
-        }
+            res.status(200).json(json);
+            return;
+        // }
     } catch (err) {
         console.error(err);
         res.status(400).json({ error: "bad request" });

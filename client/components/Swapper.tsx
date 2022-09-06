@@ -7,6 +7,7 @@ import {
     TextField,
 } from "@mui/material";
 import { ethers } from "ethers";
+import { joinSignature } from "ethers/lib/utils";
 import Image from "next/image";
 import {
     ChangeEvent,
@@ -115,7 +116,37 @@ const Swapper = () => {
                         await tx?.wait();
                     }
                 } else {
-                    // SETUP NEXTJS API REQUEST
+                    const payload = {
+                        amount: ethers.utils
+                            .parseUnits(
+                                fromToken.amount.toString(),
+                                fromTokenDecimals
+                            )
+                            .toString(),
+                        address,
+                        chainId: provider.network.chainId.toString(),
+                    };
+                    const response = await fetch(
+                        `/api/${fromToken.address}/${
+                            toToken.address
+                        }?${new URLSearchParams(payload).toString()}`
+                    );
+
+                    if (response.ok) {
+                        const json = await response.json();
+                        const txData = json.tx;
+                        if (txData) {
+                            if (txData.gas) {
+                                delete Object.assign(txData, {
+                                    gasLimit: txData.gas,
+                                }).gas;
+                            }
+                            const tx = await account?.sendTransaction(json.tx);
+                            await tx?.wait();
+                        } else {
+                            console.log(json);
+                        }
+                    }
                 }
             } catch (err) {
                 console.error(err);

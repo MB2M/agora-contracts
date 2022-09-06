@@ -5,6 +5,7 @@ import { Box, Button, Grid, TextField } from "@mui/material";
 import { ethers } from "ethers";
 import { ChangeEvent, SetStateAction, useEffect, useState } from "react";
 import { useAddress } from "../hooks/useAddress";
+import { CrossmintPayButton } from "@crossmint/client-sdk-react-ui";
 
 type CoinPayment = "eth" | "usd";
 
@@ -96,6 +97,16 @@ const NFTDisplay = () => {
                         <Button onClick={() => handlePay("usd", nft)}>
                             Buy USD
                         </Button>
+                        <CrossmintPayButton
+                            clientId="764df2f4-d61f-4bcc-9013-be09d5f8cc38"
+                            mintConfig={{
+                                type: "erc-1155",
+                                totalPrice: "0.1",
+                                _tokenId: "1",
+                            }}
+                            environment="staging"
+
+                        />
                     </Grid>
                 ))}
             </Grid>

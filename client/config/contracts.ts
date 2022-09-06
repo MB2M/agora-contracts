@@ -17,6 +17,12 @@ export const contractAddresses = {
         stable: "ds",
         Aggregator: "ddddd",
     },
+    rinkeby: {
+        nft: "sss",
+        nftShop: "ez",
+        stable: "ds",
+        Aggregator: "ddddd",
+    },
     bsc: {
         nft: "sss",
         nftShop: "ez",
