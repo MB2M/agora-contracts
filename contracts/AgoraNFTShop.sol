@@ -3,6 +3,7 @@ pragma solidity 0.8.12;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 interface IAgoraNFT {
     function mint(
@@ -30,7 +31,7 @@ interface IERC20 {
         returns (uint256);
 }
 
-contract AgoraNFTShop is Ownable {
+contract AgoraNFTShop is Pausable, Ownable {
     IAgoraNFT public agoraNFT;
     IERC20 public stableUSD;
     address public fundsRecipient;
@@ -59,20 +60,28 @@ contract AgoraNFTShop is Ownable {
         USDPrice[8] = 50; // Citizen
     }
 
+    function pause() public onlyOwner {
+        _pause();
+    }
+
+    function unpause() public onlyOwner {
+        _unpause();
+    }
+
     /**
      * @dev Buy NFT with ETH with a 0.1% slippage
      * @param _tokenId Id of the token to be minted
      */
-    function buyInETH(uint256 _tokenId) public payable {
-        uint256 ethPrice = getNFTPriceInETH(_tokenId);
-        require(
-            msg.value > (999 * ethPrice) / 1000 &&
-                msg.value < (1001 * ethPrice) / 1000,
-            "bad ETH amount"
-        );
+    function buyInETH(uint256 _tokenId, address _to) public payable whenNotPaused{
+        // uint256 ethPrice = getNFTPriceInETH(_tokenId);
+        // require(
+        //     msg.value > (999 * ethPrice) / 1000 &&
+        //         msg.value < (1001 * ethPrice) / 1000,
+        //     "bad ETH amount"
+        // );
 
         // Proceed to mint the token
-        _mint(msg.sender, _tokenId, 1, "");
+        _mint(_to, _tokenId, 1, "");
         // The value is immediately transfered to the funds recipient
         payable(fundsRecipient).transfer(msg.value);
     }
@@ -84,13 +93,13 @@ contract AgoraNFTShop is Ownable {
      * You may need to call the "approve" function before.
      * @param _tokenId Id of the token to be minted
      */
-    function buyInUSD(uint256 _tokenId) public {
+    function buyInUSD(uint256 _tokenId, address _to) public whenNotPaused{
         stableUSD.transferFrom(
             msg.sender,
             fundsRecipient,
             USDPrice[_tokenId] * 10**stableUSD.decimals()
         );
-        _mint(msg.sender, _tokenId, 1, "");
+        _mint(_to, _tokenId, 1, "");
     }
 
     /**

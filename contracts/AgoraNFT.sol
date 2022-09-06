@@ -3,10 +3,12 @@ pragma solidity 0.8.12;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
-contract AgoraNFT is ERC1155, AccessControl {
+contract AgoraNFT is Pausable, ERC1155, AccessControl {
     bytes32 public constant URI_SETTER_ROLE = keccak256("URI_SETTER_ROLE");
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bool public transferPaused;
 
     mapping(uint256 => uint256) public supplyLeft;
 
@@ -24,6 +26,40 @@ contract AgoraNFT is ERC1155, AccessControl {
         supplyLeft[6] = 6000; // Epicurus
         supplyLeft[7] = 46667; // Thales
         supplyLeft[8] = type(uint256).max; // Citizen
+    }
+
+    modifier whenNotTransferPaused() {
+        require(!transferPaused, "transfer paused");
+        _;
+    }
+
+    modifier whenTransferPaused() {
+        require(transferPaused, "transfer unpaused");
+        _;
+    }
+
+    function pause() public onlyRole(DEFAULT_ADMIN_ROLE) {
+        _pause();
+    }
+
+    function unpause() public onlyRole(DEFAULT_ADMIN_ROLE) {
+        _unpause();
+    }
+
+    function pauseTransfer()
+        public
+        whenNotTransferPaused
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        transferPaused = true;
+    }
+
+    function unpauseTransfer()
+        public
+        whenTransferPaused
+        onlyRole(DEFAULT_ADMIN_ROLE)
+    {
+        transferPaused = false;
     }
 
     function setURI(string memory newuri) public onlyRole(URI_SETTER_ROLE) {
@@ -48,6 +84,32 @@ contract AgoraNFT is ERC1155, AccessControl {
         _mintBatch(to, ids, amounts, data);
     }
 
+    /**
+     * @dev See {IERC1155-safeTransferFrom}.
+     */
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public virtual override whenNotTransferPaused {
+        return super.safeTransferFrom(from, to, id, amount, data);
+    }
+
+    /**
+     * @dev See {IERC1155-safeBatchTransferFrom}.
+     */
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public virtual override whenNotTransferPaused {
+        return super.safeBatchTransferFrom(from, to, ids, amounts, data);
+    }
+
     // The following functions are overrides required by Solidity.
 
     function _beforeTokenTransfer(
@@ -57,7 +119,7 @@ contract AgoraNFT is ERC1155, AccessControl {
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
-    ) internal override(ERC1155) {
+    ) internal override(ERC1155) whenNotPaused {
         for (uint256 i; i < ids.length; i++) {
             require(supplyLeft[ids[i]] >= amounts[i], "not enough NFT");
             supplyLeft[ids[i]] -= amounts[i];
