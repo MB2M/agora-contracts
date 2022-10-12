@@ -97,7 +97,7 @@ describe("AgoraNFTShop", function () {
                 const { agoraNFTShop, user } = await loadFixture(deploy);
 
                 await expect(
-                    agoraNFTShop.connect(user).buyInUSD(1, user.address)
+                    agoraNFTShop.connect(user).buyInUSD(1, user.address, 1)
                 ).to.be.revertedWith("ERC20: insufficient allowance");
             });
 
@@ -110,7 +110,7 @@ describe("AgoraNFTShop", function () {
                     .approve(agoraNFTShop.address, ONE_MILLION);
 
                 await expect(
-                    agoraNFTShop.connect(user).buyInUSD(1, user.address)
+                    agoraNFTShop.connect(user).buyInUSD(1, user.address, 1)
                 ).to.be.revertedWith(`ERC20: transfer amount exceeds balance`);
             });
 
@@ -125,7 +125,7 @@ describe("AgoraNFTShop", function () {
                 await stable.transfer(user.address, ONE_MILLION);
                 // await agoraNFT.grantRole(MINTER_ROLE, agoraNFTShop.address);
                 await expect(
-                    agoraNFTShop.connect(user).buyInUSD(1, user.address)
+                    agoraNFTShop.connect(user).buyInUSD(1, user.address, 1)
                 ).to.be.revertedWith(
                     `AccessControl: account ${agoraNFTShop.address.toLowerCase()} is missing role ${MINTER_ROLE}`
                 );
@@ -146,7 +146,7 @@ describe("AgoraNFTShop", function () {
                     ONE_MILLION
                 );
 
-                await agoraNFTShop.connect(user).buyInUSD(1, user.address);
+                await agoraNFTShop.connect(user).buyInUSD(1, user.address, 1);
 
                 expect(await agoraNFT.balanceOf(user.address, 1)).to.equal(1);
                 expect(await stable.balanceOf(user.address)).to.equal(
@@ -162,7 +162,7 @@ describe("AgoraNFTShop", function () {
                 const { agoraNFTShop, user } = await loadFixture(deploy);
 
                 await expect(
-                    agoraNFTShop.connect(user).buyInETH(1, user.address, {
+                    agoraNFTShop.connect(user).buyInETH(1, user.address, 1, {
                         value: ethers.BigNumber.from("1000000000"),
                     })
                 ).to.be.revertedWith("bad ETH amount");
@@ -181,7 +181,7 @@ describe("AgoraNFTShop", function () {
 
                 const tx = await agoraNFTShop
                     .connect(user)
-                    .buyInETH(1,user.address, { value: NFTPriceInETH });
+                    .buyInETH(1,user.address,1, { value: NFTPriceInETH });
 
                 expect(await agoraNFT.balanceOf(user.address, 1)).to.equal(1);
                 expect(await user.getBalance()).to.be.lessThan(

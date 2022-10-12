@@ -32,8 +32,8 @@ const config: HardhatUserConfig = {
                 mnemonic: MNEMONIC,
             },
         },
-        rinkeby: {
-            url: process.env.RINKEBY_URL,
+        goerli: {
+            url: process.env.GOERLI_URL,
             accounts: {
                 mnemonic: MNEMONIC,
             },

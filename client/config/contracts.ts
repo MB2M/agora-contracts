@@ -1,4 +1,6 @@
+import { ContractState } from "../context";
 import localhostAddresses from "./deployedContracts/localhost.json";
+import rinkebyAddresses from "./deployedContracts/rinkeby.json";
 
 export const contractAddresses = {
     localhost: {
@@ -15,13 +17,13 @@ export const contractAddresses = {
         nft: "sss",
         nftShop: "ez",
         stable: "ds",
-        Aggregator: "ddddd",
+        aggregator: "ddddd",
     },
     rinkeby: {
-        nft: "sss",
-        nftShop: "ez",
-        stable: "ds",
-        Aggregator: "ddddd",
+        nft: rinkebyAddresses.agoraNFT,
+        nftShop: rinkebyAddresses.agoraNFTShop,
+        stable: rinkebyAddresses.stable,
+        aggregator: rinkebyAddresses.mockAggregatorV3,
     },
     bsc: {
         nft: "sss",
@@ -31,6 +33,6 @@ export const contractAddresses = {
         nft: "sss",
         nftShop: "ez",
         stable: "ds",
-        Aggregator: "ddddd",
+        aggregator: "ddddd",
     },
 };

@@ -69,21 +69,26 @@ contract AgoraNFTShop is Pausable, Ownable {
     }
 
     /**
-     * @dev Buy NFT with ETH with a 0.1% slippage
+     * @dev Buy NFT with ETH with a 0.8% slippage
      * @param _tokenId Id of the token to be minted
      */
-    function buyInETH(uint256 _tokenId, address _to) public payable whenNotPaused{
-        // uint256 ethPrice = getNFTPriceInETH(_tokenId);
-        // require(
-        //     msg.value > (999 * ethPrice) / 1000 &&
-        //         msg.value < (1001 * ethPrice) / 1000,
-        //     "bad ETH amount"
-        // );
+    function buyInETH(
+        uint256 _tokenId,
+        address _to,
+        uint _amount
+    ) public payable whenNotPaused {
+        uint256 ethPrice = getNFTPriceInETH(_tokenId);
+        require(
+            msg.value > (_amount * (992 * ethPrice)) / 1000 &&
+                msg.value < (_amount * (1008 * ethPrice)) / 1000,
+            "bad ETH amount"
+        );
 
         // Proceed to mint the token
-        _mint(_to, _tokenId, 1, "");
+        _mint(_to, _tokenId, _amount, "");
         // The value is immediately transfered to the funds recipient
-        payable(fundsRecipient).transfer(msg.value);
+        (bool sent, ) = payable(fundsRecipient).call{value: msg.value}("");
+        require(sent, "Failed to send Ether");
     }
 
     /**
@@ -93,13 +98,17 @@ contract AgoraNFTShop is Pausable, Ownable {
      * You may need to call the "approve" function before.
      * @param _tokenId Id of the token to be minted
      */
-    function buyInUSD(uint256 _tokenId, address _to) public whenNotPaused{
+    function buyInUSD(
+        uint256 _tokenId,
+        address _to,
+        uint _amount
+    ) public whenNotPaused {
         stableUSD.transferFrom(
             msg.sender,
             fundsRecipient,
-            USDPrice[_tokenId] * 10**stableUSD.decimals()
+            _amount * USDPrice[_tokenId] * 10**stableUSD.decimals()
         );
-        _mint(_to, _tokenId, 1, "");
+        _mint(_to, _tokenId, _amount, "");
     }
 
     /**

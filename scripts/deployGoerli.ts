@@ -3,7 +3,7 @@ import { ethers } from "hardhat";
 const MINTER_ROLE = ethers.utils.keccak256(
     ethers.utils.toUtf8Bytes("MINTER_ROLE")
 );
-const AGORANFT_URI = "http://localhost:3000/api/nft/{id}";
+const AGORANFT_URI = "https://agora-app-two.vercel.app//api/nft/{id}";
 const ETHUSD = ethers.BigNumber.from("151000000000"); //1510$ -- 8 decimals
 
 async function main() {
@@ -40,10 +40,6 @@ async function main() {
     console.log("AgoraNFTShop deployed to:", agoraNFTShop.address);
 
     await agoraNFT.grantRole(MINTER_ROLE, agoraNFTShop.address);
-    await agoraNFT.grantRole(
-        MINTER_ROLE,
-        "0xdab1a1854214684ace522439684a145e62505233"
-    );
 
     const contractAddresses = {
         stable: stable.address,
@@ -51,7 +47,7 @@ async function main() {
         mockAggregatorV3: mockAggregatorV3.address,
         agoraNFTShop: agoraNFTShop.address,
     };
-    storeContractAddresses("localhost", contractAddresses);
+    storeContractAddresses("goerli", contractAddresses);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

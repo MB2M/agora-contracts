@@ -18,6 +18,7 @@ const NFTDisplay = () => {
     const handleETHPriceChange = (e: ChangeEvent<HTMLInputElement>) => {
         setETHPrice(Number(e.target.value));
     };
+    
 
     const handleSetETHPRice = async () => {
         try {
