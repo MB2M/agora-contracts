@@ -3,8 +3,8 @@ import { ethers } from "hardhat";
 const MINTER_ROLE = ethers.utils.keccak256(
     ethers.utils.toUtf8Bytes("MINTER_ROLE")
 );
-const AGORANFT_URI = "https://agora-app-two.vercel.app//api/nft/{id}";
-const ETHUSD = ethers.BigNumber.from("130000000000"); //1510$ -- 8 decimals
+const AGORANFT_URI = "https://agora-app-two.vercel.app/api/nft/{id}";
+const ETHUSD = ethers.BigNumber.from("130000000000"); //1300$ -- 8 decimals
 
 async function main() {
     const [owner, treasury] = await ethers.getSigners();
@@ -47,7 +47,7 @@ async function main() {
         mockAggregatorV3: mockAggregatorV3.address,
         agoraNFTShop: agoraNFTShop.address,
     };
-    storeContractAddresses("goerli", contractAddresses);
+    storeContractAddresses("bsctestnet", contractAddresses);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
